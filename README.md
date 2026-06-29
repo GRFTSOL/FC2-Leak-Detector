@@ -38,8 +38,8 @@ FC2流出检查器是一款专业的内容状态分析工具，基于fc2ppvdb.co
 ### 主要功能
 
  **视频流出状态检查** - 快速确认视频是否已经在其他网站流出  
- **作者/女优作品分析** - 分析特定作者或女优的所有视频状态  
- **批量处理** - 同时处理多个作者或女优ID  
+ **作者/演员作品分析** - 分析特定作者或演员的所有视频状态  
+ **批量处理** - 同时处理多个作者或演员ID  
  **磁力链接搜索** - 自动搜索并提取视频的磁力链接  
  **图片下载** - 自动下载视频缩略图  
  **详细报告生成** - 生成全面的分析报告，支持文本和JSON格式  
@@ -96,9 +96,9 @@ python run.py [选项]
 选项:
   -h, --help                显示帮助信息
   -w ID, --writer ID        分析作者ID的视频
-  -a ID, --actress ID       分析女优ID的视频
+  -a ID, --actress ID       分析演员ID的视频
   -b IDS, --batch IDS       批量处理多个作者ID (用逗号分隔)
-  -ba IDS, --batch-actress  批量处理多个女优ID (用逗号分隔)
+  -ba IDS, --batch-actress  批量处理多个演员ID (用逗号分隔)
   -v ID, --video ID         通过视频ID获取作者的所有视频
   -t NUM, --threads NUM     设置并行线程数 (默认值见配置)
   --jellyfin                为已流出视频生成Jellyfin元数据（NFO文件和海报）；可单独使用，会查找48小时内的分析结果
@@ -117,13 +117,13 @@ python run.py [选项]
 # 分析单个作者的作品
 python run.py -w 5656
 
-# 分析单个女优的作品
+# 分析单个演员的作品
 python run.py -a 5711
 
 # 批量分析多个作者
 python run.py -b 5656,3524,4461
 
-# 批量分析多个女优
+# 批量分析多个演员
 python run.py -ba 5711,3986,4219
 
 # 通过视频ID获取作者的所有视频
@@ -138,7 +138,7 @@ python run.py -w 5656 --jellyfin
 # 使用最近的分析结果生成Jellyfin元数据（无需重新分析）
 python run.py --jellyfin
 
-# 分析女优视频但不获取磁力链接
+# 分析演员视频但不获取磁力链接
 python run.py -a 5711 --no-magnet
 
 # 分析作者视频但不下载缩略图
@@ -165,13 +165,13 @@ python run.py -w 5656 -t 20 --jellyfin -l en
 # 批量分析多个作者，使用最大50个线程，不下载缩略图但获取磁力链接，并生成Jellyfin元数据
 python run.py -b 5656,3524,4461,7890,6543,2109 -t 50 --no-image --jellyfin
 
-# 分析女优视频，使用15个线程，不获取磁力链接，生成Jellyfin元数据，并使用日文界面
+# 分析演员视频，使用15个线程，不获取磁力链接，生成Jellyfin元数据，并使用日文界面
 python run.py -a 5711 -t 15 --no-magnet --jellyfin -l ja
 
 # 通过视频ID找到作者并分析其所有视频，使用30个线程，生成Jellyfin元数据
 python run.py -v 1234567 -t 30 --jellyfin
 
-# 批量分析多个女优，使用25个线程，不获取磁力链接和缩略图，生成Jellyfin元数据
+# 批量分析多个演员，使用25个线程，不获取磁力链接和缩略图，生成Jellyfin元数据
 python run.py -ba 5711,3986,4219,8765,5432 -t 25 --no-magnet --no-image --jellyfin
 
 # 独立使用Jellyfin元数据生成，从最近48小时内的分析结果中选择
@@ -193,7 +193,7 @@ python run.py --jellyfin
 | | request_interval | 普通请求间隔时间范围(秒) | (0.5, 1.0) |
 | | retry_base | 重试间隔基数 | 2.0 |
 | **缓存设置** | cache_ttl | 缓存有效期(秒) | 172800 (48小时) |
-| **存储路径** | cache_dir | 作者和女优ID缓存目录 | data/id_cache |
+| **存储路径** | cache_dir | 作者和演员ID缓存目录 | data/id_cache |
 | | image_dir | 视频缩略图存储目录 | data/img |
 | | result_dir | 分析结果存储目录 | data/results |
 | | magnet_dir | 磁链信息存储目录 | data/magnets |
@@ -241,10 +241,10 @@ FC2-Leak-Detector/
 
 ### 常见问题
 
-#### 如何找到作者ID或女优ID?
+#### 如何找到作者ID或演员ID?
 
-女优ID可以从fc2ppvdb.com网站的URL中找到。例如:
-- 女优页面URL: `.../actress/6789` 中的 `6789` 即为女优ID
+演员ID可以从fc2ppvdb.com网站的URL中找到。例如:
+- 演员页面URL: `.../actress/6789` 中的 `6789` 即为演员ID
 - 作者ID由于没有明文在网页中显示，用户可以选取任意一个该作者的FC2视频ID采用-v id的命令行格式直接获取该作者的视频，无需提供具体id
 
 #### 关于Jellyfin元数据的使用
@@ -253,12 +253,12 @@ FC2-Leak-Detector/
 - NFO文件：包含视频标题、描述、外部链接等信息
 - 海报图片：视频缩略图作为海报
 - 占位MP4文件：**注意：这些是0字节的空文件，不能直接播放**，仅用于在Jellyfin中显示视频条目
-- 观看链接：NFO文件中包含MissAV和123AV的观看链接，可通过预告片按钮或外部链接访问
+- 观看链接：NFO文件中包含第三方在线观看网站的观看链接，可通过预览按钮或外部链接访问
 - 磁力链接：如果可用，NFO文件中会包含磁力链接，用于下载视频
 
-要观看视频，您需要点击Jellyfin界面中的预告片按钮跳转到在线观看网站，或使用磁力链接下载视频。
+要观看视频，您需要点击Jellyfin界面中的预览按钮跳转到在线观看网站，或使用磁力链接下载视频。
 
-单独使用`--jellyfin`参数时，程序会查找48小时内的分析结果，并让您选择一个用于生成元数据。这样可以避免重复分析同一作者或女优的视频，方便快速生成元数据。
+单独使用`--jellyfin`参数时，程序会查找48小时内的分析结果，并让您选择一个用于生成元数据。这样可以避免重复分析同一作者或演员的视频，方便快速生成元数据。
 
 #### 分析速度很慢怎么办?
 
@@ -303,7 +303,7 @@ python run.py --clear-cache
 
 ### Star趋势
 
-[![Star历史图表](https://starchart.cc/FC2-Research-Club/FC2-Leak-Detector.svg)](https://starchart.cc/FC2-Research-Club/FC2-Leak-Detector)
+[![Star趋势图表](https://starchart.cc/FC2-Research-Club/FC2-Leak-Detector.svg)](https://starchart.cc/FC2-Research-Club/FC2-Leak-Detector)
 
 ## English
 
@@ -331,8 +331,8 @@ See the [complete changelog](CHANGELOG.md) for more details.
 ### Key Features
 
 **Video Status Check** - Quickly confirm if videos have been leaked on other websites  
-**Author/Actress Works Analysis** - Analyze the status of all videos by specific authors or actresses  
-**Batch Processing** - Process multiple author or actress IDs simultaneously  
+**Author/Performer Works Analysis** - Analyze the status of all videos by specific authors or performers  
+**Batch Processing** - Process multiple author or performer IDs simultaneously  
 **Magnet Link Search** - Automatically search and extract video magnet links  
 **Image Download** - Automatically download video thumbnails  
 **Detailed Report Generation** - Generate comprehensive analysis reports, supporting text and JSON formats  
@@ -389,9 +389,9 @@ python run.py [options]
 Options:
   -h, --help                Show help information
   -w ID, --writer ID        Analyze videos by author ID
-  -a ID, --actress ID       Analyze videos by actress ID
+  -a ID, --actress ID       Analyze videos by performer ID
   -b IDS, --batch IDS       Batch process multiple author IDs (comma separated)
-  -ba IDS, --batch-actress  Batch process multiple actress IDs (comma separated)
+  -ba IDS, --batch-actress  Batch process multiple performer IDs (comma separated)
   -v ID, --video ID         Get all videos from author by video ID
   -t NUM, --threads NUM     Set parallel thread count (default in config)
   --jellyfin                Generate Jellyfin metadata (NFO files and posters) for leaked videos; can be used independently to find analysis results from the last 48 hours
@@ -410,13 +410,13 @@ Options:
 # Analyze a single author's works
 python run.py -w 5656
 
-# Analyze a single actress's works
+# Analyze a single performer's works
 python run.py -a 5711
 
 # Batch analyze multiple authors
 python run.py -b 5656,3524,4461
 
-# Batch analyze multiple actresses
+# Batch analyze multiple performers
 python run.py -ba 5711,3986,4219
 
 # Get all videos from author by video ID
@@ -431,7 +431,7 @@ python run.py -w 5656 --jellyfin
 # Use recent analysis results to generate Jellyfin metadata (without re-analyzing)
 python run.py --jellyfin
 
-# Analyze actress videos without magnet links
+# Analyze performer videos without magnet links
 python run.py -a 5711 --no-magnet
 
 # Analyze author videos without thumbnails
@@ -458,13 +458,13 @@ python run.py -w 5656 -t 20 --jellyfin -l en
 # Batch analyze multiple authors, use up to 50 threads, don't download thumbnails but fetch magnet links, and generate Jellyfin metadata
 python run.py -b 5656,3524,4461,7890,6543,2109 -t 50 --no-image --jellyfin
 
-# Analyze actress videos, use 15 threads, don't fetch magnet links, generate Jellyfin metadata, and use Japanese interface
+# Analyze performer videos, use 15 threads, don't fetch magnet links, generate Jellyfin metadata, and use Japanese interface
 python run.py -a 5711 -t 15 --no-magnet --jellyfin -l ja
 
 # Find author by video ID and analyze all videos from that author, use 30 threads, and generate Jellyfin metadata
 python run.py -v 1234567 -t 30 --jellyfin
 
-# Batch analyze multiple actresses, use 25 threads, don't fetch magnet links and thumbnails, and generate Jellyfin metadata
+# Batch analyze multiple performers, use 25 threads, don't fetch magnet links and thumbnails, and generate Jellyfin metadata
 python run.py -ba 5711,3986,4219,8765,5432 -t 25 --no-magnet --no-image --jellyfin
 
 # Generate Jellyfin metadata independently, choosing from analysis results within the last 48 hours
@@ -534,10 +534,10 @@ FC2-Leak-Detector/
 
 ### FAQ
 
-#### How to Find Author ID or Actress ID?
+#### How to Find Author ID or Performer ID?
 
-Actress ID can be found in the URL of fc2ppvdb.com website. For example:
-- Actress page URL: `.../actress/6789` where `6789` is the actress ID
+Performer ID can be found in the URL of fc2ppvdb.com website. For example:
+- Performer page URL: `.../actress/6789` where `6789` is the performer ID
 - Author ID is not explicitly displayed on the webpage. Users can select any FC2 video ID from that author and use the -v id command line format to directly get videos from that author without providing a specific id.
 
 #### About Using Jellyfin Metadata
@@ -546,12 +546,12 @@ The generated Jellyfin metadata includes the following:
 - NFO files: Contains video title, description, external links, and other information
 - Poster images: Video thumbnails used as posters
 - Placeholder MP4 files: **Note: These are 0-byte empty files that cannot be played directly**, only used to display video entries in Jellyfin
-- Watch links: NFO files contain links to MissAV and 123AV for watching, accessible via the trailer button or external links
+- Watch links: NFO files contain links to third-party viewing websites for watching, accessible via the preview button or external links
 - Magnet links: If available, NFO files include magnet links for downloading the videos
 
-To watch videos, you need to click the trailer button in the Jellyfin interface to jump to the online viewing website, or use the magnet link to download the video.
+To watch videos, you need to click the preview button in the Jellyfin interface to jump to the online viewing website, or use the magnet link to download the video.
 
-When using the `--jellyfin` parameter independently, the program will search for analysis results from the last 48 hours and let you choose one to generate metadata. This avoids re-analyzing the same author or actress's videos and makes it convenient to quickly generate metadata.
+When using the `--jellyfin` parameter independently, the program will search for analysis results from the last 48 hours and let you choose one to generate metadata. This avoids re-analyzing the same author or performer's videos and makes it convenient to quickly generate metadata.
 
 #### Analysis is Slow, What Should I Do?
 
@@ -624,8 +624,8 @@ FC2流出チェッカーは、fc2ppvdb.comに基づいて構築された専門�
 ### 主な機能
 
 **ビデオ流出状態確認** - 動画が他のサイトに流出しているかどうかを素早く確認  
-**作者/女優作品分析** - 特定の作者または女優のすべての動画状態を分析  
-**バッチ処理** - 複数の作者または女優IDを同時に処理  
+**作者/出演者作品分析** - 特定の作者または出演者のすべての動画状態を分析  
+**バッチ処理** - 複数の作者や出演者IDを同時に処理  
 **マグネットリンク検索** - 動画のマグネットリンクを自動的に検索して抽出  
 **画像ダウンロード** - 動画のサムネイル画像を自動的にダウンロード  
 **詳細レポート生成** - テキストとJSON形式をサポートする包括的な分析レポートを生成  
@@ -682,9 +682,9 @@ python run.py [オプション]
 オプション:
   -h, --help                ヘルプ情報を表示
   -w ID, --writer ID        作者IDの動画を分析
-  -a ID, --actress ID       女優IDの動画を分析
+  -a ID, --actress ID       出演者IDの動画を分析
   -b IDS, --batch IDS       複数の作者IDをバッチ処理 (カンマ区切り)
-  -ba IDS, --batch-actress  複数の女優IDをバッチ処理 (カンマ区切り)
+  -ba IDS, --batch-actress  複数の出演者IDをバッチ処理 (カンマ区切り)
   -v ID, --video ID         動画IDから作者のすべての動画を取得
   -t NUM, --threads NUM     並列スレッド数を設定 (設定値は設定を参照)
   --jellyfin                流出した動画のJellyfinメタデータを生成 (NFOファイルとポスター)；単独で使用可能、最近48時間の分析結果を検索
@@ -703,13 +703,13 @@ python run.py [オプション]
 # 単一作者の作品を分析
 python run.py -w 5656
 
-# 単一女優の作品を分析
+# 単一出演者の作品を分析
 python run.py -a 5711
 
 # 複数の作者をバッチ分析
 python run.py -b 5656,3524,4461
 
-# 複数の女優をバッチ分析
+# 複数の出演者をバッチ分析
 python run.py -ba 5711,3986,4219
 
 # 動画IDから作者のすべての動画を取得
@@ -724,7 +724,7 @@ python run.py -w 5656 --jellyfin
 # 最近の分析結果からJellyfinメタデータを生成 (再分析なし)
 python run.py --jellyfin
 
-# 女優の動画を分析し、マグネットリンクを取得しない
+# 出演者の動画を分析し、マグネットリンクを取得しない
 python run.py -a 5711 --no-magnet
 
 # 作者の動画を分析し、サムネイルをダウンロードしない
@@ -751,13 +751,13 @@ python run.py -w 5656 -t 20 --jellyfin -l en
 # 複数の作者をバッチ分析し、最大50スレッドを使用し、サムネイルはダウンロードせずマグネットリンクを取得し、Jellyfinメタデータを生成
 python run.py -b 5656,3524,4461,7890,6543,2109 -t 50 --no-image --jellyfin
 
-# 女優の動画を分析し、15スレッドを使用し、マグネットリンクを取得せず、Jellyfinメタデータを生成し、日本語インターフェースを使用
+# 出演者の動画を分析し、15スレッドを使用し、マグネットリンクを取得せず、Jellyfinメタデータを生成し、日本語インターフェースを使用
 python run.py -a 5711 -t 15 --no-magnet --jellyfin -l ja
 
 # 動画IDから作者を見つけ、その作者のすべての動画を分析し、30スレッドを使用し、Jellyfinメタデータを生成
 python run.py -v 1234567 -t 30 --jellyfin
 
-# 複数の女優をバッチ分析し、25スレッドを使用し、マグネットリンクとサムネイルを取得せず、Jellyfinメタデータを生成
+# 複数の出演者をバッチ分析し、25スレッドを使用し、マグネットリンクとサムネイルを取得せず、Jellyfinメタデータを生成
 python run.py -ba 5711,3986,4219,8765,5432 -t 25 --no-magnet --no-image --jellyfin
 
 # Jellyfinメタデータを単独で生成し、最近48時間の分析結果から選択
@@ -779,7 +779,7 @@ python run.py --jellyfin
 | | request_interval | 通常リクエスト間隔範囲 (秒) | (0.5, 1.0) |
 | | retry_base | リトライ間隔ベース | 2.0 |
 | **キャッシュ設定** | cache_ttl | キャッシュ有効期間 (秒) | 172800 (48時間) |
-| **保存パス** | cache_dir | 作者と女優IDキャッシュディレクトリ | data/id_cache |
+| **保存パス** | cache_dir | 作者と出演者IDキャッシュディレクトリ | data/id_cache |
 | | image_dir | 動画サムネイル保存ディレクトリ | data/img |
 | | result_dir | 分析結果保存ディレクトリ | data/results |
 | | magnet_dir | マグネット情報保存ディレクトリ | data/magnets |
@@ -827,10 +827,10 @@ FC2-Leak-Detector/
 
 ### よくある質問
 
-#### 作者IDまたは女優IDをどうやって見つけますか？
+#### 作者IDまたは出演者IDをどうやって見つけますか？
 
-女優IDはfc2ppvdb.comウェブサイトのURLから見つけることができます。例：
-- 女優ページURL: `.../actress/6789` の `6789` が女優ID
+出演者IDはfc2ppvdb.comウェブサイトのURLから見つけることができます。例：
+- 出演者ページURL: `.../actress/6789` の `6789` が出演者ID
 - 作者IDはウェブページ上で明文で表示されていません。ユーザーは、その作者のFC2ビデオIDを-v idのコマンドライン形式で選択し、特定のidを提供せずにその作者の動画を直接取得できます。
 
 #### Jellyfinメタデータの使用について
@@ -839,12 +839,12 @@ FC2-Leak-Detector/
 - NFOファイル：動画タイトル、説明、外部リンクなどの情報を含む
 - ポスター画像：動画サムネイルをポスターとして使用
 - プレースホルダーMP4ファイル：**注意：これらは0バイトの空ファイルで、直接再生できません**、Jellyfinで動画エントリを表示するためにのみ使用されます
-- 視聴リンク：NFOファイルにはMissAVと123AVの視聴リンクが含まれ、予告映画ボタンまたは外部リンクからアクセスできます
+- 視聴リンク：NFOファイルには外部配信プラットフォームの視聴リンクが含まれ、プレビューボタンまたは外部リンクからアクセスできます
 - マグネットリンク：利用可能な場合、NFOファイルには動画をダウンロードするためのマグネットリンクが含まれます
 
-動画を視聴するには、Jellyfinインターフェースの予告映画ボタンをクリックしてオンライン視聴サイトにジャンプするか、マグネットリンクを使用して動画をダウンロードする必要があります。
+動画を視聴するには、Jellyfinインターフェースのプレビューボタンをクリックしてオンライン視聴サイトにジャンプするか、マグネットリンクを使用して動画をダウンロードする必要があります。
 
-When using the `--jellyfin` parameter independently, the program will search for analysis results from the last 48 hours and let you choose one to generate metadata. This avoids re-analyzing the same author or actress's videos and makes it convenient to quickly generate metadata.
+When using the `--jellyfin` parameter independently, the program will search for analysis results from the last 48 hours and let you choose one to generate metadata. This avoids re-analyzing the same author or performer's videos and makes it convenient to quickly generate metadata.
 
 #### 分析が遅い場合はどうすればいいですか？
 
@@ -881,9 +881,7 @@ python run.py --clear-cache
 
 **重要：このツールを使用する前に、以下の免責事項をよく読んでください**
 
-このプロジェクトは、学術研究、データ分析、技術学習のみを目的とした技術研究ツールです。ユーザーは、このツールを使用する際に、所在地域の法律法規に従う必要があります。このツールは、著作権コンテンツを提供、保存、配布するものではありません。公開インデックスされたリソースを指すメタデータ情報のみを提供します。
-
-ユーザーは自身の行為に対する責任を負うものとします。作者および貢献者は、このツールの使用によって発生するいかなる法的問題または損害に対しても責任を負いません。このツールは、コンテンツステータスをチェックするためのものであり、著作権侵害のコンテンツを取得または共有することを奨励するものではありません。コンテンツクリエイターの権利を尊重し、正規コンテンツをサポートしてください。
+このプロジェクトは、学術研究、データ分析、技術学習のみを目的とした技術研究ツールです。ユーザーは、このツールを使用する際に、所在地域の法律法規に従う必要があります。このツールは、コンテンツステータスをチェックするためのものであり、著作権侵害のコンテンツを取得または共有することを奨励するものではありません。コンテンツクリエイターの権利を尊重し、正規コンテンツをサポートしてください。
 
 このプロジェクトは、GNU General Public License v3 (GNU GPL v3)の下でリリースされています。これは、GPLの規定に従って、このソフトウェアを自由に使用、修正、配布できることを意味します。詳細については、プロジェクトルートディレクトリのLICENSEファイルを参照してください。
 
@@ -901,12 +899,12 @@ python run.py --clear-cache
 > 受上游資料來源 `fc2ppvdb` 於2025年9月改版影響，本工具目前處於**功能受限**狀態：
 > 
 > 1.  **資料遺失**：由於源站不再公開顯示圖片及部分元資料，**封面預覽等關鍵資訊目前可能無法自動擷取**。
-> 2.  **網路限制**：源站已啟用高強度的 Cloudflare 區域封鎖（Geo-blocking），**中國大陸 IP 幾乎完全無法連線**，且對 VPN/代理的偵測極為嚴格，機房網路的I[...]
-> 3.  **維護狀態**：因為源站受到 FC2 官方的壓力導致網站減少了展示資訊並提高了驗證，舊版「一鍵圖文整合」的使用體驗短期內難以恢復。建議持有**海外��[...]
+> 2.  **網路限制**：源站已啟用高強度的 Cloudflare 區域封鎖（Geo-blocking），**中國大陸 IP 幾乎完全無法連線**，且對 VPN/代理的偵測極為嚴格，機房網路的IP無法訪問。
+> 3.  **維護狀態**：因為源站受到 FC2 官方的壓力導致網站減少了展示資訊並提高了驗證，舊版「一鍵圖文整合」的使用體驗短期內難以恢復。建議持有**海外原生 IP** 的使用者嘗試使用，或等待後續適配更新。
 > 
 > *我們也在持續關注是否有新的替代資料來源出現。*
 
-FC2 流出檢查器是一款專業的內容狀態分析工具，基於 fc2ppvdb.com 建構。使用者只需提供某位作者的一個具體 FC2 影片 ID，即可快速取得其在 fc2.com 發佈作品的完整狀態報告[...]。
+FC2 流出檢查器是一款專業的內容狀態分析工具，基於 fc2ppvdb.com 建構。使用者只需提供某位作者的一個具體 FC2 影片 ID，即可快速取得其在 fc2.com 發佈作品的完整狀態報告，同時自動整合高畫質預覽圖與磁力連結資源。
 
 請查看[完整版本更新日誌](CHANGELOG.md)以了解更多細節。
 
@@ -918,8 +916,8 @@ FC2 流出檢查器是一款專業的內容狀態分析工具，基於 fc2ppvdb.
 ### 主要功能
 
  **影片流出狀態檢查** - 快速確認影片是否已在其他網站流出  
- **作者/女優作品分析** - 分析特定作者或女優的所有影片狀態  
- **批次處理** - 同時處理多個作者或女優 ID  
+ **作者/演員作品分析** - 分析特定作者或演員的所有影片狀態  
+ **批次處理** - 同時處理多個作者或演員 ID  
  **磁力連結搜尋** - 自動搜尋並擷取影片的磁力連結  
  **圖片下載** - 自動下載影片縮圖  
  **詳細報告產生** - 產生完整的分析報告，支援文字與 JSON 格式  
@@ -976,9 +974,9 @@ python run.py [選項]
 選項:
   -h, --help                顯示說明資訊
   -w ID, --writer ID        分析作者 ID 的影片
-  -a ID, --actress ID       分析女優 ID 的影片
+  -a ID, --actress ID       分析演員 ID 的影片
   -b IDS, --batch IDS       批次處理多個作者 ID（以逗號分隔）
-  -ba IDS, --batch-actress  批次處理多個女優 ID（以逗號分隔）
+  -ba IDS, --batch-actress  批次處理多個演員 ID（以逗號分隔）
   -v ID, --video ID         透過影片 ID 取得作者的所有影片
   -t NUM, --threads NUM     設定平行執行緒數（預設值見設定檔）
   --jellyfin                為已流出的影片產生 Jellyfin 元資料（NFO 檔案與海報）；可單獨使用，會搜尋 48 小時內的分析結果
@@ -997,13 +995,13 @@ python run.py [選項]
 # 分析單一作者的作品
 python run.py -w 5656
 
-# 分析單一女優的作品
+# 分析單一演員的作品
 python run.py -a 5711
 
 # 批次分析多位作者
 python run.py -b 5656,3524,4461
 
-# 批次分析多位女優
+# 批次分析多位演員
 python run.py -ba 5711,3986,4219
 
 # 透過影片 ID 取得作者的所有影片
@@ -1018,7 +1016,7 @@ python run.py -w 5656 --jellyfin
 # 使用最近的分析結果產生 Jellyfin 元資料（無需重新分析）
 python run.py --jellyfin
 
-# 分析女優影片但不擷取磁力連結
+# 分析演員影片但不擷取磁力連結
 python run.py -a 5711 --no-magnet
 
 # 分析作者影片但不下載縮圖
@@ -1045,20 +1043,20 @@ python run.py -w 5656 -t 20 --jellyfin -l en
 # 批次分析多位作者，使用最多 50 個執行緒，不下載縮圖但擷取磁力連結，並產生 Jellyfin 元資料
 python run.py -b 5656,3524,4461,7890,6543,2109 -t 50 --no-image --jellyfin
 
-# 分析女優影片，使用 15 個執行緒，不擷取磁力連結，產生 Jellyfin 元資料，並使用日文介面
+# 分析演員影片，使用 15 個執行緒，不擷取磁力連結，產生 Jellyfin 元資料，並使用日文介面
 python run.py -a 5711 -t 15 --no-magnet --jellyfin -l ja
 
 # 透過影片 ID 找到作者並分析其所有影片，使用 30 個執行緒，並產生 Jellyfin 元資料
 python run.py -v 1234567 -t 30 --jellyfin
 
-# 批次分析多位女優，使用 25 個執行緒，不擷取磁力連結與縮圖，並產生 Jellyfin 元資料
+# 批次分析多位演員，使用 25 個執行緒，不擷取磁力連結與縮圖，並產生 Jellyfin 元資料
 python run.py -ba 5711,3986,4219,8765,5432 -t 25 --no-magnet --no-image --jellyfin
 
 # 單獨使用 Jellyfin 元資料產生，從最近 48 小時內的分析結果中選擇
 python run.py --jellyfin
 ```
 
-> **注意**：本專案預設語言為中文（zh）。若您偏好使用英文或日文介面，只需使用 `-l` 參數一次設定您的首選語言。此設定會儲存在 `i18n/preference.js[...]` 中。
+> **注意**：本專案預設語言為中文（zh）。若您偏好使用英文或日文介面，只需使用 `-l` 參數一次設定您的首選語言。此設定會儲存在 `i18n/preference.json` 中。
 
 ### 設定說明
 
@@ -1073,7 +1071,7 @@ python run.py --jellyfin
 | | request_interval | 一般請求間隔時間範圍（秒） | (0.5, 1.0) |
 | | retry_base | 重試間隔基數 | 2.0 |
 | **快取設定** | cache_ttl | 快取有效期（秒） | 172800 (48 小時) |
-| **儲存路徑** | cache_dir | 作者與女優 ID 快取目錄 | data/id_cache |
+| **儲存路徑** | cache_dir | 作者與演員 ID 快取目錄 | data/id_cache |
 | | image_dir | 影片縮圖儲存目錄 | data/img |
 | | result_dir | 分析結果儲存目錄 | data/results |
 | | magnet_dir | 磁力資訊儲存目錄 | data/magnets |
@@ -1121,24 +1119,24 @@ FC2-Leak-Detector/
 
 ### 常見問題
 
-#### 如何找到作者 ID 或女優 ID？
+#### 如何找到作者 ID 或演員 ID？
 
-女優 ID 可從 fc2ppvdb.com 網站的 URL 找到。例如：
-- 女優頁面 URL: `.../actress/6789` 中的 `6789` 即為女優 ID
+演員 ID 可從 fc2ppvdb.com 網站的 URL 找到。例如：
+- 演員頁面 URL: `.../actress/6789` 中的 `6789` 即為演員 ID
 - 作者 ID 因為未在網頁上明文顯示，使用者可以選取任一該作者的 FC2 影片 ID，使用 -v id 的命令列格式直接取得該作者的影片，無需提供具體 ID
 
 #### 關於 Jellyfin 元資料的使用
 
 產生的 Jellyfin 元資料包含：
 - NFO 檔案：包含影片標題、描述、外部連結等資訊
-- 海報圖片：影片縮圖作為海報
+- 海報圖片：影片縮圖作為海报
 - 佔位 MP4 檔案：**注意：這些為 0 位元組的空檔，無法直接播放**，僅用於在 Jellyfin 顯示影片條目
-- 觀看連結：NFO 檔案中包含 MissAV 與 123AV 的觀看連結，可透過預告片按鈕或外部連結存取
+- 觀看連結：NFO 檔案中包含第三方線上觀看網站的觀看連結，可透過預覽按鈕或外部連結存取
 - 磁力連結：若可用，NFO 檔案中會包含磁力連結，用於下載影片
 
-要觀看影片，您需要點選 Jellyfin 介面中的預告片按鈕以跳轉至線上觀看網站，或使用磁力連結下載影片。
+要觀看影片，您需要點選 Jellyfin 介面中的預覽按鈕以跳轉至線上觀看網站，或使用磁力連結下載影片。
 
-單獨使用 `--jellyfin` 參數時，程式會搜尋最近 48 小時內的分析結果，並讓您選擇一個用於產生元資料。如此可避免重複分析相同作者或女優的影片，便於快速[...]
+單獨使用 `--jellyfin` 參數時，程式會搜尋最近 48 小時內的分析結果，並讓您選擇一個用於產生元資料。如此可避免重複分析相同作者或演員的影片，便於快速產生。
 
 #### 分析速度很慢該怎麼辦？
 
@@ -1175,13 +1173,12 @@ python run.py --clear-cache
 
 **重要：在使用本工具前請詳閱以下聲明**
 
-本專案為一技術研究工具，僅供學術研究、資料分析與技術學習之用。使用者必須遵守所在司法管轄區之法律法規。本工具不提供、不儲存��[...]
+本專案為一技術研究工具，僅供學術研究、資料分析與技術學習之用。使用者必須遵守所在司法管轄區之法律法規。本工具不提供、不儲存任何版權內容。
 
-使用者應對自身之行為負責，作者與貢獻者不對使用本工具所引發之任何法律問題或損害負責。本工具僅用於檢查內容狀態，不鼓勵使用者取得或分享��[...]
+使用者應對自身之行為負責，作者與貢獻者不對使用本工具所引發之任何法律問題或損害負責。本工具僅用於檢查內容狀態，不鼓勵使用者取得或分享侵權內容。
 
 本專案採用 GNU 通用公共授權條款 v3（GNU GPL v3）發布，您可以自由使用、修改與散佈此軟體，但需遵循 GPL 協議相關規定。詳細資訊請參閱專案根目錄中的授權檔（LICENSE）。
 
 ### Star 趨勢
 
 [![Star歷史圖表](https://starchart.cc/FC2-Research-Club/FC2-Leak-Detector.svg)](https://starchart.cc/FC2-Research-Club/FC2-Leak-Detector)
-
